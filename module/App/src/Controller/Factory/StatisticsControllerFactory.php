@@ -7,6 +7,8 @@ use App\Controller\StatisticsController;
 use SocialPost\Service\Factory\SocialPostServiceFactory;
 use Statistics\Extractor\StatisticsToExtractor;
 use Statistics\Service\Factory\StatisticsServiceFactory;
+use App\Auth\Factory\AuthServiceFactory;
+use App\Auth\SocialPostAdapter;
 
 /**
  * Class StatisticsControllerFactory
@@ -23,7 +25,9 @@ class StatisticsControllerFactory implements ControllerFactoryInterface
     {
         $statsService = StatisticsServiceFactory::create();
 
-        $socialService = SocialPostServiceFactory::create();
+        $authService = AuthServiceFactory::create();
+        $userDataProviderAdapter = new SocialPostAdapter($authService);
+        $socialService = SocialPostServiceFactory::create($userDataProviderAdapter);
 
         return new StatisticsController($statsService, $socialService, new StatisticsToExtractor());
     }

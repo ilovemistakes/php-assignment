@@ -5,6 +5,7 @@ namespace SocialPost\Service\Factory;
 use SocialPost\Driver\Factory\FictionalDriverFactory;
 use SocialPost\Hydrator\FictionalPostHydrator;
 use SocialPost\Service\SocialPostService;
+use SocialPost\User\UserDataProviderInterface;
 
 /**
  * Class SocialPostServiceFactory
@@ -17,9 +18,9 @@ class SocialPostServiceFactory
     /**
      * @return SocialPostService
      */
-    public static function create(): SocialPostService
+    public static function create(UserDataProviderInterface $userDataProvider): SocialPostService
     {
-        $driver = FictionalDriverFactory::create();
+        $driver = FictionalDriverFactory::create($userDataProvider);
 
         $hydrator = new FictionalPostHydrator();
 
