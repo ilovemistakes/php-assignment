@@ -8,6 +8,7 @@ use SocialPost\Client\SocialClientInterface;
 use SocialPost\Exception\BadResponseException;
 use SocialPost\Exception\InvalidTokenException;
 use Traversable;
+use SocialPost\User\UserDataProviderInterface;
 
 /**
  * Class FictionalSocialApiDriver
@@ -31,6 +32,11 @@ class FictionalDriver implements SocialDriverInterface
     private $client;
 
     /**
+     * @var UserDataProviderInterface
+     */
+    private $userDataProvider;
+
+    /**
      * @var CacheInterface
      */
     private $cache;
@@ -41,9 +47,11 @@ class FictionalDriver implements SocialDriverInterface
      * @param SocialClientInterface $client
      */
     public function __construct(
-        SocialClientInterface $client
+        SocialClientInterface $client,
+        UserDataProviderInterface $userDataProvider
     ) {
         $this->client = $client;
+        $this->userDataProvider = $userDataProvider;
     }
 
     /**
@@ -121,10 +129,9 @@ class FictionalDriver implements SocialDriverInterface
      */
     protected function registerToken(): string
     {
-        //Todo: retrieve current user data from  an auth service stub
         $userData = [
-            'email' => 'your@email.address',
-            'name'  => 'YourName',
+            'email' => $this->userDataProvider->getUserEmail(),
+            'name' => $this->userDataProvider->getUserName(),
         ];
 
         $response = $this->client->authRequest(self::REGISTER_TOKEN_URI, $userData);
